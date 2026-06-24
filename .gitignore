@@ -1,0 +1,5 @@
+.DS_Store
+.claude/
+smoke-test/
+__pycache__/
+*.pyc
