@@ -1,0 +1,572 @@
+{
+  "vidyaranyapura": {
+    "name": "Vidyaranyapura",
+    "lat": 13.076641,
+    "lon": 77.557732,
+    "signals": 12
+  },
+  "whitefield": {
+    "name": "Whitefield",
+    "lat": 12.969637,
+    "lon": 77.749745,
+    "signals": 17
+  },
+  "malleswaram": {
+    "name": "Malleswaram",
+    "lat": 13.002735,
+    "lon": 77.570325,
+    "signals": 35
+  },
+  "shanti_nagar": {
+    "name": "Shanti Nagar",
+    "lat": 12.955537,
+    "lon": 77.592428,
+    "signals": 46
+  },
+  "shivajinagar": {
+    "name": "Shivajinagar",
+    "lat": 12.985529,
+    "lon": 77.60545,
+    "signals": 41
+  },
+  "gandhinagar": {
+    "name": "Gandhinagar",
+    "lat": 12.977153,
+    "lon": 77.580031,
+    "signals": 62
+  },
+  "jayanagar": {
+    "name": "Jayanagar",
+    "lat": 12.929273,
+    "lon": 77.582423,
+    "signals": 57
+  },
+  "jp_nagar": {
+    "name": "JP Nagar",
+    "lat": 12.909694,
+    "lon": 77.586607,
+    "signals": 56
+  },
+  "chamarajapete": {
+    "name": "Chamarajapete",
+    "lat": 12.958418,
+    "lon": 77.562916,
+    "signals": 24
+  },
+  "rajajinagar": {
+    "name": "Rajajinagar",
+    "lat": 12.988234,
+    "lon": 77.554883,
+    "signals": 38
+  },
+  "vijaya_nagar": {
+    "name": "Vijaya Nagar",
+    "lat": 12.966399,
+    "lon": 77.535409,
+    "signals": 33
+  },
+  "koramangala": {
+    "name": "Koramangala",
+    "lat": 12.935737,
+    "lon": 77.624081,
+    "signals": 69
+  },
+  "austin_town": {
+    "name": "Austin Town",
+    "lat": 12.961274,
+    "lon": 77.615294,
+    "signals": 27
+  },
+  "chikkapete": {
+    "name": "Chikkapete",
+    "lat": 12.969784,
+    "lon": 77.57569,
+    "signals": 33
+  },
+  "basavanagudi": {
+    "name": "Basavanagudi",
+    "lat": 12.941726,
+    "lon": 77.575502,
+    "signals": 50
+  },
+  "rt_nagar": {
+    "name": "RT Nagar",
+    "lat": 13.02272,
+    "lon": 77.595715,
+    "signals": 4
+  },
+  "frazer_town": {
+    "name": "Frazer Town",
+    "lat": 12.997585,
+    "lon": 77.613674,
+    "signals": 34
+  },
+  "yelahanka": {
+    "name": "Yelahanka",
+    "lat": 13.100698,
+    "lon": 77.596345,
+    "signals": 20
+  },
+  "mathikere": {
+    "name": "Mathikere",
+    "lat": 13.033359,
+    "lon": 77.558179,
+    "signals": 8
+  },
+  "jalahalli": {
+    "name": "Jalahalli",
+    "lat": 13.046453,
+    "lon": 77.54838,
+    "signals": 8
+  },
+  "marathahalli": {
+    "name": "Marathahalli",
+    "lat": 12.955257,
+    "lon": 77.698416,
+    "signals": 16
+  },
+  "kr_puram": {
+    "name": "KR Puram",
+    "lat": 13.007516,
+    "lon": 77.695935,
+    "signals": 1
+  },
+  "ramamurthy_nagar": {
+    "name": "Ramamurthy Nagar",
+    "lat": 13.012022,
+    "lon": 77.677782,
+    "signals": 6
+  },
+  "baiyyappanahalli": {
+    "name": "Baiyyappanahalli",
+    "lat": 12.996341,
+    "lon": 77.65332,
+    "signals": 9
+  },
+  "banaswadi": {
+    "name": "Banaswadi",
+    "lat": 13.014162,
+    "lon": 77.651854,
+    "signals": 8
+  },
+  "yeswanthpur": {
+    "name": "Yeswanthpur",
+    "lat": 13.022184,
+    "lon": 77.553082,
+    "signals": 6
+  },
+  "btm_layout": {
+    "name": "BTM Layout",
+    "lat": 12.914001,
+    "lon": 77.610282,
+    "signals": 33
+  },
+  "rajarajeshwari_nagar": {
+    "name": "Rajarajeshwari Nagar",
+    "lat": 12.927441,
+    "lon": 77.515522,
+    "signals": 17
+  },
+  "jnana_bharathi": {
+    "name": "Jnana Bharathi",
+    "lat": 12.943349,
+    "lon": 77.511233,
+    "signals": 9
+  },
+  "indiranagar": {
+    "name": "Indiranagar",
+    "lat": 12.973291,
+    "lon": 77.640467,
+    "signals": 56
+  },
+  "bellanduru": {
+    "name": "Bellanduru",
+    "lat": 12.929211,
+    "lon": 77.677042,
+    "signals": 20
+  },
+  "hsr_layout": {
+    "name": "HSR Layout",
+    "lat": 12.911623,
+    "lon": 77.638862,
+    "signals": 44
+  },
+  "anjanapura": {
+    "name": "Anjanapura",
+    "lat": 12.860131,
+    "lon": 77.554059,
+    "signals": 7
+  },
+  "kengeri": {
+    "name": "Kengeri",
+    "lat": 12.922973,
+    "lon": 77.484293,
+    "signals": 9
+  },
+  "sadashivanagar": {
+    "name": "Sadashivanagar",
+    "lat": 13.011019,
+    "lon": 77.580864,
+    "signals": 13
+  },
+  "vasanth_nagar": {
+    "name": "Vasanth Nagar",
+    "lat": 12.992174,
+    "lon": 77.591459,
+    "signals": 31
+  },
+  "madhavara": {
+    "name": "Madhavara",
+    "lat": 13.053199,
+    "lon": 77.472968,
+    "signals": 0
+  },
+  "rmv_2nd_stage": {
+    "name": "RMV 2nd Stage",
+    "lat": 13.036011,
+    "lon": 77.569529,
+    "signals": 16
+  },
+  "hebbal": {
+    "name": "Hebbal",
+    "lat": 13.038218,
+    "lon": 77.5919,
+    "signals": 6
+  },
+  "sahakaranagara": {
+    "name": "Sahakaranagara",
+    "lat": 13.062907,
+    "lon": 77.585882,
+    "signals": 13
+  },
+  "arkavathy_layout": {
+    "name": "Arkavathy Layout",
+    "lat": 13.067129,
+    "lon": 77.621897,
+    "signals": 6
+  },
+  "jakkur": {
+    "name": "Jakkur",
+    "lat": 13.078474,
+    "lon": 77.606894,
+    "signals": 8
+  },
+  "kalyan_nagar": {
+    "name": "Kalyan Nagar",
+    "lat": 13.022142,
+    "lon": 77.640337,
+    "signals": 4
+  },
+  "uttarahalli": {
+    "name": "Uttarahalli",
+    "lat": 12.905568,
+    "lon": 77.545544,
+    "signals": 3
+  },
+  "mahadevapura": {
+    "name": "Mahadevapura",
+    "lat": 12.99124,
+    "lon": 77.689733,
+    "signals": 0
+  },
+  "c_v_raman_nagar": {
+    "name": "C V Raman Nagar",
+    "lat": 12.985648,
+    "lon": 77.664977,
+    "signals": 15
+  },
+  "huskur": {
+    "name": "Huskur",
+    "lat": 12.860767,
+    "lon": 77.707102,
+    "signals": 3
+  },
+  "mulluru": {
+    "name": "Mulluru",
+    "lat": 12.904873,
+    "lon": 77.725131,
+    "signals": 0
+  },
+  "gunjur": {
+    "name": "Gunjur",
+    "lat": 12.920977,
+    "lon": 77.736102,
+    "signals": 0
+  },
+  "sulikunte": {
+    "name": "Sulikunte",
+    "lat": 12.888182,
+    "lon": 77.729219,
+    "signals": 3
+  },
+  "balagere": {
+    "name": "Balagere",
+    "lat": 12.937724,
+    "lon": 77.728071,
+    "signals": 0
+  },
+  "varthur": {
+    "name": "Varthur",
+    "lat": 12.940651,
+    "lon": 77.746988,
+    "signals": 0
+  },
+  "kodati": {
+    "name": "Kodati",
+    "lat": 12.887262,
+    "lon": 77.715899,
+    "signals": 0
+  },
+  "nagarabhavi": {
+    "name": "Nagarabhavi",
+    "lat": 12.966418,
+    "lon": 77.513078,
+    "signals": 15
+  },
+  "halasuru": {
+    "name": "Halasuru",
+    "lat": 12.977879,
+    "lon": 77.62467,
+    "signals": 41
+  },
+  "hoodi": {
+    "name": "Hoodi",
+    "lat": 12.991903,
+    "lon": 77.716201,
+    "signals": 3
+  },
+  "carmelaram": {
+    "name": "Carmelaram",
+    "lat": 12.9112,
+    "lon": 77.706513,
+    "signals": 0
+  },
+  "kadugodi": {
+    "name": "Kadugodi",
+    "lat": 12.998577,
+    "lon": 77.760972,
+    "signals": 8
+  },
+  "pattanduru_agrahara": {
+    "name": "Pattanduru Agrahara",
+    "lat": 12.978475,
+    "lon": 77.733422,
+    "signals": 0
+  },
+  "laggere": {
+    "name": "Laggere",
+    "lat": 13.010868,
+    "lon": 77.52073,
+    "signals": 3
+  },
+  "panathur": {
+    "name": "Panathur",
+    "lat": 12.935146,
+    "lon": 77.704754,
+    "signals": 8
+  },
+  "sulthanpalya": {
+    "name": "Sulthanpalya",
+    "lat": 13.029412,
+    "lon": 77.604695,
+    "signals": 0
+  },
+  "doddakannalli": {
+    "name": "Doddakannalli",
+    "lat": 12.908241,
+    "lon": 77.694885,
+    "signals": 4
+  },
+  "chikka_banavara": {
+    "name": "Chikka Banavara",
+    "lat": 13.080377,
+    "lon": 77.501893,
+    "signals": 2
+  },
+  "chikkanayakanahalli": {
+    "name": "Chikkanayakanahalli",
+    "lat": 12.892338,
+    "lon": 77.694199,
+    "signals": 0
+  },
+  "nagavara": {
+    "name": "Nagavara",
+    "lat": 13.037465,
+    "lon": 77.623602,
+    "signals": 14
+  },
+  "horamavu": {
+    "name": "Horamavu",
+    "lat": 13.027331,
+    "lon": 77.660151,
+    "signals": 2
+  },
+  "challaghatta": {
+    "name": "Challaghatta",
+    "lat": 12.896065,
+    "lon": 77.453998,
+    "signals": 0
+  },
+  "kudlu": {
+    "name": "Kudlu",
+    "lat": 12.888913,
+    "lon": 77.655572,
+    "signals": 12
+  },
+  "peenya": {
+    "name": "Peenya",
+    "lat": 13.032942,
+    "lon": 77.527325,
+    "signals": 26
+  },
+  "beguru": {
+    "name": "Beguru",
+    "lat": 12.874747,
+    "lon": 77.622729,
+    "signals": 3
+  },
+  "lingarajapuram": {
+    "name": "Lingarajapuram",
+    "lat": 13.009395,
+    "lon": 77.626788,
+    "signals": 2
+  },
+  "kothnur": {
+    "name": "Kothnur",
+    "lat": 12.874255,
+    "lon": 77.583725,
+    "signals": 10
+  },
+  "herohalli": {
+    "name": "Herohalli",
+    "lat": 12.991234,
+    "lon": 77.487012,
+    "signals": 0
+  },
+  "hbr_layout": {
+    "name": "HBR Layout",
+    "lat": 13.031992,
+    "lon": 77.628079,
+    "signals": 3
+  },
+  "gottigere": {
+    "name": "Gottigere",
+    "lat": 12.856532,
+    "lon": 77.587724,
+    "signals": 4
+  },
+  "richmond_town": {
+    "name": "Richmond Town",
+    "lat": 12.963555,
+    "lon": 77.601586,
+    "signals": 42
+  },
+  "kammanahalli": {
+    "name": "Kammanahalli",
+    "lat": 13.014854,
+    "lon": 77.638203,
+    "signals": 5
+  },
+  "epip_zone": {
+    "name": "EPIP Zone",
+    "lat": 12.978192,
+    "lon": 77.724645,
+    "signals": 7
+  },
+  "konanakunte": {
+    "name": "Konanakunte",
+    "lat": 12.879286,
+    "lon": 77.569753,
+    "signals": 9
+  },
+  "mahalakshmi_layout": {
+    "name": "Mahalakshmi Layout",
+    "lat": 13.011315,
+    "lon": 77.544697,
+    "signals": 19
+  },
+  "basaveshwaranagar": {
+    "name": "Basaveshwaranagar",
+    "lat": 12.993757,
+    "lon": 77.539132,
+    "signals": 19
+  },
+  "sir_mv_layout": {
+    "name": "Sir MV Layout",
+    "lat": 12.943794,
+    "lon": 77.477946,
+    "signals": 0
+  },
+  "choodasandra": {
+    "name": "Choodasandra",
+    "lat": 12.892155,
+    "lon": 77.680378,
+    "signals": 4
+  },
+  "kaval_byrasandra": {
+    "name": "Kaval Byrasandra",
+    "lat": 13.020024,
+    "lon": 77.609289,
+    "signals": 0
+  },
+  "kempapura_agrahara": {
+    "name": "Kempapura Agrahara",
+    "lat": 12.970623,
+    "lon": 77.555376,
+    "signals": 13
+  },
+  "haralur": {
+    "name": "Haralur",
+    "lat": 12.904486,
+    "lon": 77.665443,
+    "signals": 0
+  },
+  "dr_shivaram_karanth_layout": {
+    "name": "Dr. Shivaram Karanth Layout",
+    "lat": 13.102719,
+    "lon": 77.530045,
+    "signals": 0
+  },
+  "banashankari_6th_stage": {
+    "name": "Banashankari 6th Stage",
+    "lat": 12.884924,
+    "lon": 77.515485,
+    "signals": 4
+  },
+  "tc_palya": {
+    "name": "TC Palya",
+    "lat": 13.022615,
+    "lon": 77.705733,
+    "signals": 6
+  },
+  "hennur": {
+    "name": "Hennur",
+    "lat": 13.037077,
+    "lon": 77.641357,
+    "signals": 11
+  },
+  "nagasandra": {
+    "name": "Nagasandra",
+    "lat": 13.040968,
+    "lon": 77.500429,
+    "signals": 12
+  },
+  "banashankari": {
+    "name": "Banashankari",
+    "lat": 12.92782,
+    "lon": 77.556621,
+    "signals": 30
+  },
+  "nadaprabhu_kempegowda_layout": {
+    "name": "Nadaprabhu Kempegowda Layout",
+    "lat": 12.918921,
+    "lon": 77.45188,
+    "signals": 0
+  },
+  "kasavanahalli": {
+    "name": "Kasavanahalli",
+    "lat": 12.897774,
+    "lon": 77.674508,
+    "signals": 0
+  }
+}

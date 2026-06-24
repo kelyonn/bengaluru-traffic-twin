@@ -1,0 +1,272 @@
+[
+  {
+    "name": "Silk Board Junction",
+    "lat": 12.9174,
+    "lon": 77.6229,
+    "current_kmh": 24,
+    "freeflow_kmh": 30,
+    "relative_speed": 0.8,
+    "congestion_pct": 20.0
+  },
+  {
+    "name": "KR Puram Bridge",
+    "lat": 13.0012,
+    "lon": 77.6924,
+    "current_kmh": 23,
+    "freeflow_kmh": 30,
+    "relative_speed": 0.767,
+    "congestion_pct": 23.3
+  },
+  {
+    "name": "Marathahalli Bridge",
+    "lat": 12.9558,
+    "lon": 77.7006,
+    "current_kmh": 17,
+    "freeflow_kmh": 26,
+    "relative_speed": 0.654,
+    "congestion_pct": 34.6
+  },
+  {
+    "name": "Hebbal Flyover",
+    "lat": 13.0453,
+    "lon": 77.5974,
+    "current_kmh": 20,
+    "freeflow_kmh": 24,
+    "relative_speed": 0.833,
+    "congestion_pct": 16.7
+  },
+  {
+    "name": "Electronic City Toll",
+    "lat": 12.8455,
+    "lon": 77.6603,
+    "current_kmh": 26,
+    "freeflow_kmh": 26,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Whitefield ITPL",
+    "lat": 12.9698,
+    "lon": 77.7499,
+    "current_kmh": 38,
+    "freeflow_kmh": 38,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "MG Road",
+    "lat": 12.9758,
+    "lon": 77.6093,
+    "current_kmh": 23,
+    "freeflow_kmh": 28,
+    "relative_speed": 0.821,
+    "congestion_pct": 17.9
+  },
+  {
+    "name": "Bannerghatta Road",
+    "lat": 12.8935,
+    "lon": 77.5975,
+    "current_kmh": 30,
+    "freeflow_kmh": 34,
+    "relative_speed": 0.882,
+    "congestion_pct": 11.8
+  },
+  {
+    "name": "ORR Sarjapur Junction",
+    "lat": 12.9151,
+    "lon": 77.6845,
+    "current_kmh": 33,
+    "freeflow_kmh": 37,
+    "relative_speed": 0.892,
+    "congestion_pct": 10.8
+  },
+  {
+    "name": "ORR Marathahalli",
+    "lat": 12.949,
+    "lon": 77.696,
+    "current_kmh": 17,
+    "freeflow_kmh": 26,
+    "relative_speed": 0.654,
+    "congestion_pct": 34.6
+  },
+  {
+    "name": "ORR Bellandur",
+    "lat": 12.927,
+    "lon": 77.676,
+    "current_kmh": 17,
+    "freeflow_kmh": 26,
+    "relative_speed": 0.654,
+    "congestion_pct": 34.6
+  },
+  {
+    "name": "Bellary Road Hebbal",
+    "lat": 13.0211,
+    "lon": 77.5991,
+    "current_kmh": 26,
+    "freeflow_kmh": 26,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Hosur Road Bommanahalli",
+    "lat": 12.9043,
+    "lon": 77.6314,
+    "current_kmh": 25,
+    "freeflow_kmh": 25,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Old Airport Road",
+    "lat": 12.97,
+    "lon": 77.65,
+    "current_kmh": 33,
+    "freeflow_kmh": 37,
+    "relative_speed": 0.892,
+    "congestion_pct": 10.8
+  },
+  {
+    "name": "Tumkur Road",
+    "lat": 13.01,
+    "lon": 77.52,
+    "current_kmh": 20,
+    "freeflow_kmh": 28,
+    "relative_speed": 0.714,
+    "congestion_pct": 28.6
+  },
+  {
+    "name": "Manyata Tech Park",
+    "lat": 13.047,
+    "lon": 77.622,
+    "current_kmh": 20,
+    "freeflow_kmh": 24,
+    "relative_speed": 0.833,
+    "congestion_pct": 16.7
+  },
+  {
+    "name": "Koramangala 100ft Road",
+    "lat": 12.9352,
+    "lon": 77.6245,
+    "current_kmh": 23,
+    "freeflow_kmh": 31,
+    "relative_speed": 0.742,
+    "congestion_pct": 25.8
+  },
+  {
+    "name": "HSR Layout BDA Complex",
+    "lat": 12.9121,
+    "lon": 77.6446,
+    "current_kmh": 29,
+    "freeflow_kmh": 29,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Indiranagar 100ft Road",
+    "lat": 12.9784,
+    "lon": 77.6408,
+    "current_kmh": 18,
+    "freeflow_kmh": 22,
+    "relative_speed": 0.818,
+    "congestion_pct": 18.2
+  },
+  {
+    "name": "JP Nagar",
+    "lat": 12.9082,
+    "lon": 77.5858,
+    "current_kmh": 18,
+    "freeflow_kmh": 23,
+    "relative_speed": 0.783,
+    "congestion_pct": 21.7
+  },
+  {
+    "name": "Yeshwanthpur Circle",
+    "lat": 13.0274,
+    "lon": 77.5541,
+    "current_kmh": 22,
+    "freeflow_kmh": 32,
+    "relative_speed": 0.688,
+    "congestion_pct": 31.2
+  },
+  {
+    "name": "Nagawara Junction",
+    "lat": 13.0455,
+    "lon": 77.629,
+    "current_kmh": 26,
+    "freeflow_kmh": 26,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Varthur Road",
+    "lat": 12.9454,
+    "lon": 77.7264,
+    "current_kmh": 21,
+    "freeflow_kmh": 25,
+    "relative_speed": 0.84,
+    "congestion_pct": 16.0
+  },
+  {
+    "name": "NICE Road Tumkur end",
+    "lat": 13.06,
+    "lon": 77.505,
+    "current_kmh": 32,
+    "freeflow_kmh": 32,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Electronic City Phase 2",
+    "lat": 12.839,
+    "lon": 77.676,
+    "current_kmh": 24,
+    "freeflow_kmh": 24,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Outer Ring Road Kadubeesanahalli",
+    "lat": 12.938,
+    "lon": 77.695,
+    "current_kmh": 16,
+    "freeflow_kmh": 26,
+    "relative_speed": 0.615,
+    "congestion_pct": 38.5
+  },
+  {
+    "name": "Devarabeesanahalli",
+    "lat": 12.959,
+    "lon": 77.713,
+    "current_kmh": 29,
+    "freeflow_kmh": 35,
+    "relative_speed": 0.829,
+    "congestion_pct": 17.1
+  },
+  {
+    "name": "Hoskote Road KR Puram",
+    "lat": 13.008,
+    "lon": 77.712,
+    "current_kmh": 31,
+    "freeflow_kmh": 31,
+    "relative_speed": 1.0,
+    "congestion_pct": 0.0
+  },
+  {
+    "name": "Rajajinagar",
+    "lat": 13.002,
+    "lon": 77.554,
+    "current_kmh": 19,
+    "freeflow_kmh": 24,
+    "relative_speed": 0.792,
+    "congestion_pct": 20.8
+  },
+  {
+    "name": "Malleswaram",
+    "lat": 13.003,
+    "lon": 77.571,
+    "current_kmh": 15,
+    "freeflow_kmh": 24,
+    "relative_speed": 0.625,
+    "congestion_pct": 37.5
+  }
+]

@@ -1,0 +1,24 @@
+{
+  "city": "bengaluru",
+  "source": "OpenStreetMap (areas + signals)",
+  "signals": 1377,
+  "signals_unmatched": 2,
+  "areas_total": 95,
+  "areas_with_signals": 95,
+  "messages_total": 113697,
+  "messages_by_type": {
+    "data": 40019,
+    "heartbeat": 40019,
+    "alert": 16141,
+    "frames": 16141,
+    "status": 1377
+  },
+  "sim_window": "2026-06-15 07:00:00 +300s intervals",
+  "topic_patterns": {
+    "data": "traffic/bengaluru/{area}/{signal_id}/data",
+    "heartbeat": "traffic/bengaluru/{area}/{signal_id}/heartbeat",
+    "alert": "traffic/bengaluru/{area}/{signal_id}/alert",
+    "frames": "traffic/bengaluru/{area}/{signal_id}/frames",
+    "status": "management/bengaluru/{area}/{signal_id}/status"
+  }
+}
