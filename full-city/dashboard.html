@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>Bengaluru Traffic Digital Twin</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <script src="https://unpkg.com/deck.gl@latest/dist.min.js"></script>
+  <script src="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.js"></script>
+  <link href="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.css" rel="stylesheet"/>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+  <style>
+    :root {
+      --surface:#ffffff; --canvas:#f6f7f9; --border:#e5e7eb; --border-subtle:#f3f4f6;
+      --text-1:#111827; --text-2:#4b5563; --text-3:#9ca3af;
+      --accent:#0f766e; --accent-subtle:#f0fdfa;
+      --green:#059669; --amber:#d97706; --orange:#ea580c; --red:#dc2626;
+      --teal:#0f766e; --teal-light:#ccfbf1;
+    }
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',system-ui,sans-serif;background:var(--canvas);color:var(--text-1);height:100vh;display:flex;flex-direction:column;overflow:hidden;-webkit-font-smoothing:antialiased}
+
+    header{display:flex;align-items:center;height:48px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:13px;flex-shrink:0}
+    .logo{font-weight:700;font-size:14px;letter-spacing:-.3px;display:flex;align-items:center;gap:7px}
+    .sep{width:1px;height:20px;background:var(--border);margin:0 14px}
+    nav{display:flex}
+    nav a{padding:14px;font-size:13px;font-weight:500;color:var(--text-3);text-decoration:none;border-bottom:2px solid transparent;cursor:pointer;transition:color .15s}
+    nav a.active{color:var(--teal);border-bottom-color:var(--teal)}
+    nav a:hover{color:var(--text-1)}
+    .hdr-right{margin-left:auto;display:flex;align-items:center;gap:14px;flex-shrink:0}
+    .status{font-size:11px;color:var(--green);font-weight:500;display:flex;align-items:center;gap:5px}
+    .status::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 2s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .clock-display{text-align:right;line-height:1.2}
+    .clock-time{font-size:20px;font-weight:700;letter-spacing:-.5px;font-variant-numeric:tabular-nums}
+    .clock-label{font-size:10px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:.3px}
+
+    .view{flex:1;overflow:hidden;display:none;flex-direction:column}
+    .view.active{display:flex}
+
+    /* Controls */
+    .controls{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--surface);border-bottom:1px solid var(--border);font-size:12px}
+    .ctrl-group{display:flex;gap:1px;background:var(--border);border-radius:5px;overflow:hidden}
+    .ctrl-btn{background:var(--surface);border:none;padding:5px 10px;font-size:11px;font-weight:500;color:var(--text-3);cursor:pointer;font-family:inherit;transition:background .1s,color .1s}
+    .ctrl-btn.on{background:var(--text-1);color:white}
+    .ctrl-btn.tt{border-radius:4px;border:1px solid var(--border);margin-left:2px}
+    .ctrl-btn.tt.on{background:var(--green);color:white;border-color:var(--green)}
+    .timeline{flex:1;display:flex;align-items:center;gap:8px;margin-left:12px}
+    .timeline span{font-size:10px;color:var(--text-3);font-variant-numeric:tabular-nums;min-width:32px}
+    .timeline input[type=range]{flex:1;accent-color:var(--teal);height:3px}
+    .icon-btn{width:28px;height:28px;border-radius:4px;border:1px solid var(--border);background:var(--surface);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--text-2);transition:all .1s}
+    .icon-btn:hover{border-color:var(--text-3)}
+    .icon-btn.playing{background:var(--teal);border-color:var(--teal);color:white}
+    .speed-ctrl{margin-left:2px}
+    .speed-btn{padding:4px 8px;border-radius:4px;border:1px solid var(--border);background:var(--surface);font-size:10px;font-weight:600;color:var(--text-2);cursor:pointer;font-family:inherit;font-variant-numeric:tabular-nums;min-width:32px;transition:all .1s}
+    .speed-btn:hover{border-color:var(--text-3)}
+
+    /* Map */
+    .map-area{flex:1;position:relative}
+    .panel{position:absolute;z-index:10;background:var(--surface);border:1px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,.08);font-size:12px}
+    .metrics{top:12px;left:12px;display:flex;border-radius:6px;overflow:hidden}
+    .metric{padding:10px 16px;border-right:1px solid var(--border);min-width:100px}
+    .metric:last-child{border-right:none}
+    .metric-label{font-size:10px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+    .metric-val{font-size:18px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.2}
+    .metric-unit{font-size:10px;color:var(--text-3);font-weight:400}
+    .tt-panel{top:12px;right:12px;border-radius:6px;width:240px;max-height:calc(100% - 24px);overflow-y:auto}
+    .tt-header{padding:10px 12px;border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--green);text-transform:uppercase;letter-spacing:.3px;position:sticky;top:0;background:var(--surface)}
+    .tt-row{display:flex;justify-content:space-between;align-items:center;padding:7px 12px;border-bottom:1px solid var(--border-subtle);font-size:11px}
+    .tt-name{color:var(--text-2)}.tt-val{font-weight:600;font-variant-numeric:tabular-nums}
+    .legend-panel{bottom:12px;left:12px;border-radius:6px;padding:10px 12px}
+    .legend-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;color:var(--text-3);margin-bottom:6px}
+    .legend-bar{width:120px;height:4px;border-radius:2px;background:linear-gradient(to right,#dc2626,#ea580c,#d97706,#059669)}
+    .legend-labels{display:flex;justify-content:space-between;font-size:9px;color:var(--text-3);margin-top:3px;width:120px}
+    .legend-item{display:flex;align-items:center;gap:5px;margin-top:6px;font-size:10px;color:var(--text-3)}
+    .legend-dot{width:14px;height:3px;border-radius:1px}
+    #tip{position:absolute;pointer-events:none;z-index:20;display:none;background:var(--text-1);color:white;border-radius:6px;padding:8px 12px;font-size:11px;line-height:1.6;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+    #tip b{color:#93c5fd}
+    .fps-badge{position:absolute;bottom:12px;right:12px;z-index:10;font-size:10px;color:var(--text-3);font-variant-numeric:tabular-nums;background:var(--surface);border:1px solid var(--border);padding:3px 8px;border-radius:4px}
+
+    /* Loading */
+    #overlay{position:absolute;inset:0;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;gap:12px}
+    .load-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .load-msg{font-size:13px;font-weight:500}.load-sub{font-size:11px;color:var(--text-3)}
+    .load-track{width:200px;height:2px;background:var(--canvas);border-radius:1px;overflow:hidden}
+    .load-fill{height:100%;background:var(--teal);width:0%;transition:width .4s ease}
+
+    /* Analytics */
+    #analytics{padding:20px 24px;overflow-y:auto;gap:16px}
+    .section-title{font-size:12px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+    .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px}
+    .kpi-card-label{font-size:11px;color:var(--text-3);font-weight:500;margin-bottom:6px}
+    .kpi-card-val{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+    .kpi-card-sub{font-size:11px;color:var(--text-3);margin-top:4px}
+    .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px}
+    .card.wide{grid-column:1/-1}
+    .card-title{font-size:12px;font-weight:600;margin-bottom:12px}
+    .chart-area{width:100%;height:240px}
+
+    /* Peak comparison */
+    .peak-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:20px}
+    .peak-card{background:var(--surface);border:1px solid var(--border);padding:18px 20px}
+    .peak-card:first-child{border-radius:6px 0 0 6px;border-right:none}
+    .peak-card:last-child{border-radius:0 6px 6px 0}
+    .peak-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:12px}
+    .peak-label.am{color:var(--orange)}.peak-label.pm{color:var(--teal)}
+    .peak-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;color:var(--text-2)}
+    .peak-val{font-weight:600;color:var(--text-1);font-variant-numeric:tabular-nums}
+
+    /* Area table */
+    .tbl{width:100%;border-collapse:collapse;font-size:11px}
+    .tbl th{text-align:left;padding:8px 10px;font-weight:600;color:var(--text-3);font-size:10px;text-transform:uppercase;letter-spacing:.3px;border-bottom:1px solid var(--border)}
+    .tbl td{padding:8px 10px;border-bottom:1px solid var(--border-subtle)}
+    .tbl tr{cursor:pointer;transition:background .1s}
+    .tbl tr:hover td{background:var(--canvas)}
+    .rank{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:3px;background:var(--canvas);font-size:10px;font-weight:600;color:var(--text-3)}
+    .bar{display:inline-block;height:4px;border-radius:2px;vertical-align:middle;margin-right:6px}
+
+    /* Area detail (drill-down) */
+    #area-detail{display:none}
+    #area-detail.visible{display:block}
+    .detail-back{display:inline-flex;align-items:center;gap:4px;font-size:12px;color:var(--teal);cursor:pointer;font-weight:500;margin-bottom:12px;border:none;background:none;font-family:inherit}
+    .detail-back:hover{text-decoration:underline}
+    .detail-header{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
+    .detail-header h2{font-size:18px;font-weight:700}
+    .detail-header span{font-size:12px;color:var(--text-3)}
+    .detail-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+    .detail-kpi{background:var(--canvas);border-radius:6px;padding:12px 14px}
+    .detail-kpi-label{font-size:10px;color:var(--text-3);font-weight:500;text-transform:uppercase;letter-spacing:.2px;margin-bottom:4px}
+    .detail-kpi-val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+    .detail-charts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .detail-chart{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:16px 18px}
+    .detail-chart.wide{grid-column:1/-1}
+    .detail-chart h3{font-size:12px;font-weight:600;margin-bottom:10px}
+    .detail-chart-area{width:100%;height:220px}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+Bengaluru Traffic Digital Twin
+  </div>
+  <div class="sep"></div>
+  <nav>
+    <a class="active" onclick="switchTab('map')">Live Map</a>
+    <a onclick="switchTab('analytics')">Analytics</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="status">Simulation Running</div>
+    <div class="sep"></div>
+    <div class="clock-display">
+      <div class="clock-time" id="clock">00:00</div>
+      <div class="clock-label" id="clock-label">midnight</div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ LIVE MAP ═════════════════════════════════════ -->
+<div id="map" class="view active">
+  <div class="controls">
+    <div class="ctrl-group">
+      <button class="ctrl-btn on" id="bc" onclick="tog('c')">Congestion</button>
+      <button class="ctrl-btn on" id="bv" onclick="tog('v')">Vehicles</button>
+      <button class="ctrl-btn on" id="bh" onclick="tog('h')">Heat</button>
+    </div>
+    <button class="ctrl-btn tt on" id="br" onclick="tog('r')">TomTom</button>
+    <div class="timeline">
+      <span>00:00</span>
+      <input type="range" id="sl" min="0" max="86399" value="0" oninput="onSlide(+this.value)"/>
+      <span>24:00</span>
+      <button class="icon-btn" onclick="skip(-300)" title="Back 5 min">&#9664;&#9664;</button>
+      <button class="icon-btn" id="pb" onclick="togglePlay()">&#9654;</button>
+      <button class="icon-btn" onclick="skip(300)" title="Forward 5 min">&#9654;&#9654;</button>
+      <button class="icon-btn" onclick="resetSim()" title="Reset">&#x21BA;</button>
+      <div class="speed-ctrl">
+        <button class="speed-btn" id="spd-btn" onclick="cycleSpeed()">1x</button>
+      </div>
+    </div>
+  </div>
+  <div class="map-area">
+    <div id="overlay">
+      <div class="load-spinner"></div>
+      <div class="load-msg" id="om">Loading...</div>
+      <div class="load-track"><div class="load-fill" id="ob"></div></div>
+      <div class="load-sub" id="os"></div>
+    </div>
+    <div class="metrics panel">
+      <div class="metric"><div class="metric-label">Vehicles</div><div class="metric-val" id="k-veh">0</div></div>
+      <div class="metric"><div class="metric-label">Avg Speed</div><div class="metric-val" id="k-spd">—<span class="metric-unit"> km/h</span></div></div>
+      <div class="metric"><div class="metric-label">Congested</div><div class="metric-val" style="color:var(--red)" id="k-jam">0</div></div>
+      <div class="metric"><div class="metric-label">Period</div><div class="metric-val" id="k-period" style="font-size:12px;font-weight:600;color:var(--text-2)">Night</div></div>
+    </div>
+    <div class="tt-panel panel" id="tt-panel">
+      <div class="tt-header">Real Traffic — TomTom</div>
+      <div id="tt-rows"></div>
+    </div>
+    <div class="legend-panel panel">
+      <div class="legend-title">Congestion</div>
+      <div class="legend-bar"></div>
+      <div class="legend-labels"><span>Jam</span><span>Free</span></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ea580c"></div>Vehicle trail</div>
+      <div class="legend-item"><div class="legend-dot" style="background:var(--green);border-radius:50%;width:6px;height:6px"></div>TomTom corridor</div>
+    </div>
+    <div id="tip"></div>
+    <div class="fps-badge" id="fps">— fps</div>
+  </div>
+</div>
+
+<!-- ═══ ANALYTICS ════════════════════════════════════ -->
+<div id="analytics" class="view">
+  <!-- Main analytics view -->
+  <div id="analytics-main">
+    <div class="section-title">24-Hour City Overview</div>
+    <div class="kpi-grid">
+      <div class="kpi-card"><div class="kpi-card-label">Peak Active Roads</div><div class="kpi-card-val" id="ak-peak">—</div><div class="kpi-card-sub" id="ak-peak-time"></div></div>
+      <div class="kpi-card"><div class="kpi-card-label">Avg Speed (24h)</div><div class="kpi-card-val" id="ak-speed" style="color:var(--green)">—</div><div class="kpi-card-sub">km/h city-wide mean</div></div>
+      <div class="kpi-card"><div class="kpi-card-label">Most Congested Area</div><div class="kpi-card-val" id="ak-worst" style="font-size:15px;color:var(--amber)">—</div><div class="kpi-card-sub" id="ak-worst-sub"></div></div>
+      <div class="kpi-card"><div class="kpi-card-label">Jam-Level Intervals</div><div class="kpi-card-val" id="ak-jams" style="color:var(--red)">—</div><div class="kpi-card-sub">5-min windows with severe congestion</div></div>
+    </div>
+
+    <div class="section-title">Peak Hour Comparison</div>
+    <div class="peak-grid" id="peak-grid">
+      <div class="peak-card">
+        <div class="peak-label am">Morning Rush · 07:00–10:00</div>
+        <div class="peak-row"><span>Avg Speed</span><span class="peak-val" id="pk-am-spd">—</span></div>
+        <div class="peak-row"><span>Jam Intervals</span><span class="peak-val" id="pk-am-jam">—</span></div>
+        <div class="peak-row"><span>Peak Roads Active</span><span class="peak-val" id="pk-am-roads">—</span></div>
+      </div>
+      <div class="peak-card">
+        <div class="peak-label pm">Evening Rush · 17:00–21:00</div>
+        <div class="peak-row"><span>Avg Speed</span><span class="peak-val" id="pk-pm-spd">—</span></div>
+        <div class="peak-row"><span>Jam Intervals</span><span class="peak-val" id="pk-pm-jam">—</span></div>
+        <div class="peak-row"><span>Peak Roads Active</span><span class="peak-val" id="pk-pm-roads">—</span></div>
+      </div>
+    </div>
+
+    <div class="chart-grid">
+      <div class="card wide"><div class="card-title">Congestion Breakdown</div><div class="chart-area" id="chart-cong"></div></div>
+      <div class="card"><div class="card-title">Active Roads</div><div class="chart-area" id="chart-edges"></div></div>
+      <div class="card"><div class="card-title">Average Speed</div><div class="chart-area" id="chart-speed"></div></div>
+      <div class="card"><div class="card-title">Speed Distribution</div><div class="chart-area" id="chart-spdist"></div></div>
+      <div class="card"><div class="card-title">Congestion Density</div><div class="chart-area" id="chart-congpie"></div></div>
+    </div>
+
+    <div class="section-title">Area Leaderboard</div>
+    <div class="card" style="margin-bottom:20px">
+      <table class="tbl">
+        <thead><tr><th></th><th>Area</th><th>Avg Congestion</th><th>Peak Hour</th><th>Peak Congestion</th><th>Avg Speed</th><th></th></tr></thead>
+        <tbody id="area-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Area detail (drill-down) -->
+  <div id="area-detail">
+    <button class="detail-back" onclick="closeDetail()">← Back to overview</button>
+    <div class="detail-header"><h2 id="detail-name"></h2><span id="detail-meta"></span></div>
+    <div class="detail-kpis">
+      <div class="detail-kpi"><div class="detail-kpi-label">Avg Speed</div><div class="detail-kpi-val" id="d-spd"></div></div>
+      <div class="detail-kpi"><div class="detail-kpi-label">Avg Congestion</div><div class="detail-kpi-val" id="d-cong" style="color:var(--orange)"></div></div>
+      <div class="detail-kpi"><div class="detail-kpi-label">Peak Hour</div><div class="detail-kpi-val" id="d-peak" style="font-size:14px"></div></div>
+      <div class="detail-kpi"><div class="detail-kpi-label">Peak Congestion</div><div class="detail-kpi-val" id="d-peakcong" style="color:var(--red)"></div></div>
+    </div>
+    <div class="detail-charts">
+      <div class="detail-chart wide"><h3>Speed Over Day</h3><div class="detail-chart-area" id="d-chart-speed"></div></div>
+      <div class="detail-chart"><h3>Congestion Over Day</h3><div class="detail-chart-area" id="d-chart-cong"></div></div>
+      <div class="detail-chart"><h3>Road Activity</h3><div class="detail-chart-area" id="d-chart-roads"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ROADS_FILE='roads_path.json',TRIPS_FILE='trips_light.json',STATS_PFX='intervals/stats_';
+const INTERVAL=300,TRAIL=200,SIM_END=86400;
+let playSpeed=60;
+const SPEEDS=[30,60,120,240,480];
+const SPEED_LABELS=['0.5x','1x','2x','4x','8x'];
+
+let roads=null,trips=null,cache={},tomtom=null;
+let statsCur=null,statsNext=null,curIB=-1;
+let t=0,playing=false,rafId=null,lastReal=null,gl=null;
+let on={c:true,v:true,h:true,r:true};
+let staticLayers=[],lastPanel=0,lastBuild=0;
+let frameCount=0,fpsLast=performance.now();
+let analyticsLoaded=false,areasData=null;
+
+function switchTab(tab){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a=>a.classList.remove('active'));
+  document.getElementById(tab).classList.add('active');
+  document.querySelectorAll('nav a').forEach(a=>{
+    if((tab==='map'&&a.textContent==='Live Map')||(tab==='analytics'&&a.textContent==='Analytics'))a.classList.add('active');
+  });
+  if(tab==='analytics'&&!analyticsLoaded)loadAnalytics();
+}
+
+function fmtTime(s){const h=Math.floor(s/3600)%24,m=Math.floor((s%3600)/60);return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');}
+function getPeriod(s){const h=s/3600;if(h<5)return'Night';if(h<7)return'Early Morning';if(h<10)return'Morning Rush';if(h<13)return'Midday';if(h<17)return'Afternoon';if(h<21)return'Evening Rush';return'Night';}
+function col(r){const v=Math.max(0,Math.min(1,r??1));if(v<.25)return[220,38,38,220];if(v<.5)return[234,88,12,200];if(v<.75)return[217,119,6,190];return[5,150,105,180];}
+async function getStats(ib){if(cache[ib])return cache[ib];try{const r=await fetch(`${STATS_PFX}${String(ib).padStart(5,'0')}.json`);if(!r.ok)return{};cache[ib]=await r.json();return cache[ib];}catch(e){return{};}}
+
+function lerp(a,b,t){return a+(b-a)*t;}
+
+function getBlended(id,alpha){
+  const c=statsCur?statsCur[id]:null;
+  const n=statsNext?statsNext[id]:null;
+  if(c&&n) return {s:lerp(c.s,n.s,alpha),r:lerp(c.r,n.r,alpha),d:lerp(c.d,n.d,alpha)};
+  if(c) return c;
+  if(n) return {s:n.s*alpha,r:1-(1-n.r)*alpha,d:n.d*alpha};
+  return null;
+}
+
+function buildStatic(alpha){
+  alpha=alpha||0;
+  staticLayers=[];
+  if(on.c&&roads&&statsCur){
+    const data=[];
+    for(const[id,ff,path]of roads){
+      const s=getBlended(id,alpha);
+      if(!s)continue;
+      data.push({id,ff,path,s:Math.round(s.s*10)/10,r:Math.round(s.r*1000)/1000,d:Math.round(s.d*100)/100});
+    }
+    staticLayers.push(new deck.PathLayer({id:'cong',data,getPath:d=>d.path,getColor:d=>col(d.r),getWidth:d=>d.r<.3?6:d.r<.6?3:1.5,widthMinPixels:1,widthMaxPixels:8,capRounded:true,jointRounded:true,pickable:true,onHover:({object,x,y})=>tip(object,x,y)}));
+  }
+  if(on.h&&roads&&statsCur){
+    const pts=[];
+    for(const[id,ff,path]of roads){
+      const s=getBlended(id,alpha);
+      if(s&&s.d>0)pts.push({position:path[path.length>>1],weight:s.d});
+    }
+    staticLayers.push(new deck.HeatmapLayer({id:'heat',data:pts,getPosition:d=>d.position,getWeight:d=>d.weight,radiusPixels:35,intensity:1.8,threshold:.05,colorRange:[[15,118,110,0],[15,118,110,50],[217,119,6,100],[234,88,12,160],[220,38,38,210],[220,38,38,240]]}));
+  }
+  if(on.r&&tomtom){
+    staticLayers.push(new deck.ScatterplotLayer({id:'tomtom',data:tomtom,getPosition:d=>[d.lon,d.lat],getRadius:100,getFillColor:d=>col(d.relative_speed),getLineColor:[5,150,105],lineWidthMinPixels:1.5,stroked:true,filled:true,pickable:true,onHover:({object,x,y})=>tipTT(object,x,y)}));
+  }
+}
+function render(){
+  const layers=[...staticLayers];
+  if(on.v&&trips)layers.push(new deck.TripsLayer({id:'trips',data:trips,getPath:d=>d.path,getTimestamps:d=>d.timestamps,getColor:[234,88,12],widthMinPixels:2,trailLength:TRAIL,currentTime:t,fadeTrail:true}));
+  gl.setProps({layers});
+}
+function tipTT(obj,x,y){const el=document.getElementById('tip');if(!obj){el.style.display='none';return;}el.style.display='block';el.style.left=(x+12)+'px';el.style.top=(y+12)+'px';el.innerHTML=`<b>${obj.name}</b><br>${obj.current_kmh} km/h actual · ${obj.freeflow_kmh} km/h free-flow<br>${obj.congestion_pct}% congested`;}
+function tip(obj,x,y){const el=document.getElementById('tip');if(!obj){el.style.display='none';return;}el.style.display='block';el.style.left=(x+12)+'px';el.style.top=(y+12)+'px';el.innerHTML=`<b>${obj.id}</b><br>${obj.s} km/h · FF ${obj.ff} km/h<br>${Math.round((1-obj.r)*100)}% congested · ${obj.d} veh/km`;}
+
+function updatePanel(){
+  document.getElementById('clock').textContent=fmtTime(t);
+  document.getElementById('clock-label').textContent=getPeriod(t);
+  document.getElementById('k-period').textContent=getPeriod(t);
+  if(trips){let n=0;for(const v of trips){const s=v.timestamps;if(s[0]<=t&&s[s.length-1]>=t-TRAIL)n++;}document.getElementById('k-veh').textContent=n.toLocaleString();}
+  if(statsCur){
+    const ib=Math.floor(t/INTERVAL)*INTERVAL;
+    const alpha=Math.min(1,(t-ib)/INTERVAL);
+    const vals=Object.keys(statsCur);
+    let sum=0,cnt=0,cong=0;
+    for(const id of vals){const v=getBlended(id,alpha);if(!v)continue;if(v.s>0){sum+=v.s;cnt++;}if(v.r<.5)cong++;}
+    document.getElementById('k-spd').innerHTML=cnt?(sum/cnt).toFixed(1)+'<span class="metric-unit"> km/h</span>':'—';
+    document.getElementById('k-jam').textContent=cong.toLocaleString();
+  }
+}
+
+async function loadInterval(ib){
+  if(ib===curIB)return;
+  curIB=ib;
+  const nextIB=ib+INTERVAL;
+  const[c,n]=await Promise.all([getStats(ib),getStats(nextIB)]);
+  statsCur=c;statsNext=n;
+  // pre-cache one more ahead
+  getStats(nextIB+INTERVAL);
+}
+
+const BUILD_INTERVAL_MS=800;
+
+function tick(now){
+  if(!playing)return;
+  if(lastReal!==null){t+=(now-lastReal)/1000*playSpeed;if(t>=SIM_END)t=0;}
+  lastReal=now;document.getElementById('sl').value=Math.floor(t);
+
+  const ib=Math.floor(t/INTERVAL)*INTERVAL;
+  const alpha=Math.min(1,(t-ib)/INTERVAL);
+
+  if(ib!==curIB){
+    loadInterval(ib).then(()=>{buildStatic(alpha);render();});
+  } else if(now-lastBuild>BUILD_INTERVAL_MS){
+    buildStatic(alpha);render();lastBuild=now;
+  } else {
+    render();
+  }
+
+  if(now-lastPanel>250){updatePanel();lastPanel=now;}
+  frameCount++;if(now-fpsLast>=1000){document.getElementById('fps').textContent=Math.round(frameCount*1000/(now-fpsLast))+' fps';frameCount=0;fpsLast=now;}
+  rafId=requestAnimationFrame(tick);
+}
+
+function togglePlay(){playing=!playing;const b=document.getElementById('pb');b.innerHTML=playing?'&#9646;&#9646;':'&#9654;';b.classList.toggle('playing',playing);if(playing){lastReal=null;rafId=requestAnimationFrame(tick);}else cancelAnimationFrame(rafId);}
+async function seekTo(){
+  const ib=Math.floor(t/INTERVAL)*INTERVAL;
+  await loadInterval(ib);
+  const alpha=Math.min(1,(t-ib)/INTERVAL);
+  buildStatic(alpha);render();updatePanel();
+}
+function onSlide(v){t=v;seekTo();}
+function resetSim(){t=0;document.getElementById('sl').value=0;seekTo();}
+function skip(delta){t=Math.max(0,Math.min(SIM_END-1,t+delta));document.getElementById('sl').value=Math.floor(t);seekTo();}
+function cycleSpeed(){const idx=(SPEEDS.indexOf(playSpeed)+1)%SPEEDS.length;playSpeed=SPEEDS[idx];document.getElementById('spd-btn').textContent=SPEED_LABELS[idx];}
+function tog(k){on[k]=!on[k];document.getElementById('b'+k).classList.toggle('on',on[k]);if(k==='r')document.getElementById('tt-panel').style.display=on[k]?'block':'none';const ib=Math.floor(t/INTERVAL)*INTERVAL;const alpha=Math.min(1,(t-ib)/INTERVAL);buildStatic(alpha);render();}
+function ld(msg,sub,pct){document.getElementById('om').textContent=msg;document.getElementById('os').textContent=sub||'';document.getElementById('ob').style.width=pct+'%';}
+
+async function init(){
+  const map=new maplibregl.Map({container:document.querySelector('.map-area'),style:'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',center:[77.614,12.972],zoom:11});
+  gl=new deck.MapboxOverlay({interleaved:false,layers:[]});
+  map.addControl(gl);map.addControl(new maplibregl.NavigationControl({showCompass:false}),'bottom-right');
+  await new Promise(r=>map.on('load',r));
+  try{
+    ld('Loading road network','',15);roads=await(await fetch(ROADS_FILE)).json();
+    ld('Loading vehicles',roads.length.toLocaleString()+' segments',40);
+    const[tr,ttR]=await Promise.all([fetch(TRIPS_FILE),fetch('tomtom_flow.json')]);
+    trips=await tr.json();tomtom=await ttR.json();
+    document.getElementById('tt-rows').innerHTML=tomtom.map(d=>{const c=d.relative_speed>.7?'var(--green)':d.relative_speed>.4?'var(--amber)':'var(--red)';return`<div class="tt-row"><span class="tt-name">${d.name}</span><span class="tt-val" style="color:${c}">${d.current_kmh}</span></div>`;}).join('');
+    ld('Rendering',trips.length.toLocaleString()+' vehicles',75);
+    await loadInterval(0);buildStatic(0);render();updatePanel();
+    document.getElementById('overlay').style.display='none';
+    for(let ib=INTERVAL*2;ib<=INTERVAL*6;ib+=INTERVAL)getStats(ib);
+  }catch(e){ld('Error: '+e.message,'',0);console.error(e);}
+}
+
+// ── Analytics ────────────────────────────────────────────────────────────────
+async function loadAnalytics(){
+  analyticsLoaded=true;
+  try{
+    const[dR,aR,sR,pR]=await Promise.all([fetch('analytics_daily.json'),fetch('analytics_areas.json'),fetch('analytics_speed_dist.json'),fetch('analytics_peaks.json')]);
+    if(!dR.ok)throw new Error('Run build_analytics.py after the simulation completes.');
+    const daily=await dR.json();areasData=await aR.json();
+    const speedDist=sR.ok?await sR.json():null;
+    const peaks=pR.ok?await pR.json():null;
+    renderAnalytics(daily,areasData,speedDist,peaks);
+  }catch(e){document.querySelector('#analytics .section-title').textContent='Analytics unavailable — '+e.message;}
+}
+
+function renderAnalytics(daily,areas,speedDist,peaks){
+  document.querySelector('#analytics-main .section-title').textContent='24-Hour City Overview';
+  const peak=daily.reduce((a,b)=>b.edges>a.edges?b:a,daily[0]);
+  const avgSpd=daily.reduce((s,d)=>s+d.avg_speed,0)/daily.length;
+  const totalJams=daily.reduce((s,d)=>s+d.jam,0);
+  document.getElementById('ak-peak').textContent=peak.edges.toLocaleString();
+  document.getElementById('ak-peak-time').textContent='at '+fmtTime(peak.t);
+  document.getElementById('ak-speed').textContent=avgSpd.toFixed(1);
+  document.getElementById('ak-jams').textContent=totalJams.toLocaleString();
+  if(areas.length){document.getElementById('ak-worst').textContent=areas[0].name;document.getElementById('ak-worst-sub').textContent=areas[0].avg_congestion+'% avg congestion';}
+
+  // Peaks
+  if(peaks){
+    document.getElementById('pk-am-spd').textContent=peaks.morning.avg_speed+' km/h';
+    document.getElementById('pk-am-jam').textContent=peaks.morning.jam_intervals.toLocaleString();
+    document.getElementById('pk-am-roads').textContent=peaks.morning.peak_roads.toLocaleString();
+    document.getElementById('pk-pm-spd').textContent=peaks.evening.avg_speed+' km/h';
+    document.getElementById('pk-pm-jam').textContent=peaks.evening.jam_intervals.toLocaleString();
+    document.getElementById('pk-pm-roads').textContent=peaks.evening.peak_roads.toLocaleString();
+  }
+
+  const hrs=daily.map(d=>fmtTime(d.t));
+  const rush=[[{xAxis:fmtTime(25200),itemStyle:{color:'rgba(220,38,38,.06)'}},{xAxis:fmtTime(36000)}],[{xAxis:fmtTime(61200),itemStyle:{color:'rgba(15,118,110,.06)'}},{xAxis:fmtTime(75600)}]];
+  const gridOpt={top:30,left:48,right:16,bottom:24};
+  const xOpt={type:'category',data:hrs,axisLabel:{fontSize:9,color:'#9ca3af',interval:Math.floor(daily.length/8)},axisLine:{lineStyle:{color:'#e5e7eb'}},axisTick:{show:false}};
+  const yOpt={type:'value',axisLabel:{fontSize:9,color:'#9ca3af'},splitLine:{lineStyle:{color:'#f3f4f6'}},axisLine:{show:false},axisTick:{show:false}};
+
+  echarts.init(document.getElementById('chart-cong')).setOption({
+    tooltip:{trigger:'axis'},legend:{top:0,textStyle:{fontSize:10,color:'#9ca3af'},itemWidth:12,itemHeight:8},grid:gridOpt,xAxis:xOpt,yAxis:yOpt,
+    series:[
+      {name:'Free',type:'bar',stack:'a',data:daily.map(d=>d.free),itemStyle:{color:'#059669'},barWidth:'100%',markArea:{silent:true,data:rush}},
+      {name:'Moderate',type:'bar',stack:'a',data:daily.map(d=>d.moderate),itemStyle:{color:'#d97706'}},
+      {name:'Heavy',type:'bar',stack:'a',data:daily.map(d=>d.heavy),itemStyle:{color:'#ea580c'}},
+      {name:'Jam',type:'bar',stack:'a',data:daily.map(d=>d.jam),itemStyle:{color:'#dc2626',borderRadius:[2,2,0,0]}},
+    ],
+  });
+
+  function lineChart(el,data,color){
+    echarts.init(document.getElementById(el)).setOption({tooltip:{trigger:'axis'},grid:gridOpt,xAxis:xOpt,yAxis:yOpt,
+      series:[{type:'line',data,smooth:.3,lineStyle:{color,width:1.5},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:color+'30'},{offset:1,color:color+'00'}]}},itemStyle:{color},showSymbol:false,markArea:{silent:true,data:rush}}]});
+  }
+  lineChart('chart-edges',daily.map(d=>d.edges),'#0f766e');
+  lineChart('chart-speed',daily.map(d=>d.avg_speed),'#059669');
+
+  // Speed distribution
+  if(speedDist){
+    echarts.init(document.getElementById('chart-spdist')).setOption({
+      tooltip:{trigger:'axis',formatter:p=>`${p[0].name} km/h<br/><b>${p[0].value.toLocaleString()}</b> road segments`},
+      grid:{top:10,left:48,right:16,bottom:30},
+      xAxis:{type:'category',data:speedDist.map(d=>d.label),axisLabel:{fontSize:9,color:'#9ca3af'},axisLine:{lineStyle:{color:'#e5e7eb'}},axisTick:{show:false}},
+      yAxis:yOpt,
+      series:[{type:'bar',data:speedDist.map(d=>d.count),itemStyle:{color:d=>d.dataIndex<4?'#dc2626':d.dataIndex<8?'#d97706':'#059669',borderRadius:[2,2,0,0]},barWidth:'80%'}],
+    });
+  }
+
+  // Congestion density pie
+  const totalFree=daily.reduce((s,d)=>s+d.free,0),totalMod=daily.reduce((s,d)=>s+d.moderate,0),totalHeavy=daily.reduce((s,d)=>s+d.heavy,0);
+  echarts.init(document.getElementById('chart-congpie')).setOption({
+    tooltip:{trigger:'item',formatter:'{b}: {c} ({d}%)'},
+    series:[{type:'pie',radius:['40%','70%'],center:['50%','55%'],label:{fontSize:10,color:'#4b5563'},itemStyle:{borderRadius:3,borderColor:'#fff',borderWidth:2},
+      data:[{value:totalFree,name:'Free',itemStyle:{color:'#059669'}},{value:totalMod,name:'Moderate',itemStyle:{color:'#d97706'}},{value:totalHeavy,name:'Heavy',itemStyle:{color:'#ea580c'}},{value:totalJams,name:'Jam',itemStyle:{color:'#dc2626'}}]}],
+  });
+
+  // Area table
+  document.getElementById('area-tbody').innerHTML=areas.map((a,i)=>{
+    const c=a.avg_congestion>60?'var(--red)':a.avg_congestion>35?'var(--orange)':a.avg_congestion>15?'var(--amber)':'var(--green)';
+    return`<tr onclick="openDetail(${i})"><td><span class="rank">${i+1}</span></td><td style="font-weight:500">${a.name}</td>
+    <td><span class="bar" style="background:${c};width:${Math.min(a.avg_congestion,100)*.7}px"></span>${a.avg_congestion}%</td>
+    <td>${fmtTime(a.peak_hour*3600)}</td><td>${a.peak_congestion}%</td><td>${a.avg_speed} km/h</td>
+    <td style="color:var(--teal);font-size:10px">→</td></tr>`;
+  }).join('');
+}
+
+// ── Area drill-down ──────────────────────────────────────────────────────────
+function openDetail(idx){
+  if(!areasData||!areasData[idx])return;
+  const a=areasData[idx];
+  document.getElementById('analytics-main').style.display='none';
+  document.getElementById('area-detail').classList.add('visible');
+
+  document.getElementById('detail-name').textContent=a.name;
+  document.getElementById('detail-meta').textContent=`${a.signals||'—'} signals · ${a.data_points.toLocaleString()} readings`;
+  document.getElementById('d-spd').textContent=a.avg_speed+' km/h';
+  document.getElementById('d-cong').textContent=a.avg_congestion+'%';
+  document.getElementById('d-peak').textContent=fmtTime(a.peak_hour*3600);
+  document.getElementById('d-peakcong').textContent=a.peak_congestion+'%';
+
+  const tl=a.timeline||[];
+  const times=tl.map(p=>fmtTime(p.t));
+  const rush=[[{xAxis:fmtTime(25200),itemStyle:{color:'rgba(220,38,38,.06)'}},{xAxis:fmtTime(36000)}],[{xAxis:fmtTime(61200),itemStyle:{color:'rgba(15,118,110,.06)'}},{xAxis:fmtTime(75600)}]];
+  const gridOpt={top:10,left:48,right:16,bottom:24};
+  const xOpt={type:'category',data:times,axisLabel:{fontSize:9,color:'#9ca3af',interval:Math.floor(tl.length/6)},axisLine:{lineStyle:{color:'#e5e7eb'}},axisTick:{show:false}};
+  const yOpt={type:'value',axisLabel:{fontSize:9,color:'#9ca3af'},splitLine:{lineStyle:{color:'#f3f4f6'}},axisLine:{show:false},axisTick:{show:false}};
+
+  // speed chart
+  const sc=echarts.init(document.getElementById('d-chart-speed'));
+  sc.setOption({tooltip:{trigger:'axis'},grid:gridOpt,xAxis:xOpt,yAxis:{...yOpt,axisLabel:{...yOpt.axisLabel,formatter:'{value} km/h'}},
+    series:[{type:'line',data:tl.map(p=>p.avg_speed),smooth:.3,lineStyle:{color:'#059669',width:1.5},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#05966930'},{offset:1,color:'#05966900'}]}},itemStyle:{color:'#059669'},showSymbol:false,markArea:{silent:true,data:rush}}]});
+
+  // congestion chart
+  const cc=echarts.init(document.getElementById('d-chart-cong'));
+  cc.setOption({tooltip:{trigger:'axis',formatter:p=>`${p[0].axisValue}<br/>Congestion: <b>${((1-p[0].value)*100).toFixed(0)}%</b>`},grid:gridOpt,xAxis:xOpt,yAxis:{...yOpt,max:1,axisLabel:{fontSize:9,color:'#9ca3af',formatter:v=>Math.round((1-v)*100)+'%'}},
+    series:[{type:'line',data:tl.map(p=>p.avg_rel),smooth:.3,lineStyle:{color:'#ea580c',width:1.5},areaStyle:{color:{type:'linear',x:0,y:0,x2:0,y2:1,colorStops:[{offset:0,color:'#ea580c00'},{offset:1,color:'#ea580c30'}]}},itemStyle:{color:'#ea580c'},showSymbol:false,markArea:{silent:true,data:rush}}]});
+
+  // roads chart
+  const rc=echarts.init(document.getElementById('d-chart-roads'));
+  rc.setOption({tooltip:{trigger:'axis'},grid:gridOpt,xAxis:xOpt,yAxis:yOpt,
+    series:[{type:'bar',data:tl.map(p=>p.roads),itemStyle:{color:'#0f766e',borderRadius:[2,2,0,0]},barWidth:'70%',markArea:{silent:true,data:rush}}]});
+
+  document.getElementById('analytics').scrollTop=0;
+}
+
+function closeDetail(){
+  document.getElementById('area-detail').classList.remove('visible');
+  document.getElementById('analytics-main').style.display='block';
+  // dispose detail charts to free memory
+  ['d-chart-speed','d-chart-cong','d-chart-roads'].forEach(id=>{const c=echarts.getInstanceByDom(document.getElementById(id));if(c)c.dispose();});
+}
+
+window.addEventListener('load',init);
+window.addEventListener('resize',()=>{document.querySelectorAll('.chart-area,.detail-chart-area').forEach(el=>{const c=echarts.getInstanceByDom(el);if(c)c.resize();});});
+</script>
+</body>
+</html>
