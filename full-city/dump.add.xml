@@ -1,0 +1,3 @@
+<additional>
+  <edgeData id="congestion" file="edgedata.out.xml" begin="0" end="86400" period="300" excludeEmpty="false"/>
+</additional>

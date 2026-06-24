@@ -1,0 +1,15 @@
+<configuration>
+  <input>
+    <net-file value="bengaluru.net.xml"/>
+    <route-files value="bengaluru.rou.xml"/>
+    <additional-files value="dump.add.xml"/>
+  </input>
+  <time>
+    <begin value="0"/>
+    <end value="86400"/>
+  </time>
+  <output>
+    <fcd-output value="fcd.out.xml"/>
+    <fcd-output.geo value="true"/>
+  </output>
+</configuration>
